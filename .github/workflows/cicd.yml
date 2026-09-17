@@ -1,7 +1,7 @@
 name: Hello Github Actions
 on: push
 
-job:
+jobs:
   hello-job:
     runs-on: ubuntu-latest
     steps:
