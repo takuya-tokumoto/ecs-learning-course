@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/**'
-      - 'cicd-selection/api/**'
+      - 'cicd-section/api/**'
       
 env:
   AWS_REGION: us-west-2
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: cicd-selection/api
+        working-directory: cicd-section/api
     steps:
       # Checkout code
       - uses: actions/checkout@v4
@@ -33,8 +33,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${ { env.AWS_REGION } }
-          role-to-assume: ${ { secrets.AWS_ROLE_TO_ASSUME } }
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
       - name : Login to Amazon ECR
         id: login-ecr
@@ -42,7 +42,7 @@ jobs:
 
       - name: Push the image to Amazon ECR
         env:
-          ECR_REGISTRY: ${ { step.login-ecr.outputs.registry } }
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker image tag temp_api_image:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
           docker image push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
